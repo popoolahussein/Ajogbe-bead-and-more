@@ -1,77 +1,109 @@
-let shop = document.getElementById("shop");
+import { shopItemsData } from './Data.js';
 
-let basket = JSON.parse(localStorage.getItem("data")) || [];
+const cartIcon = document.getElementById('cartAmount');
 
-let generateShop = () => {
-    return (shop.innerHTML = shopItemsData.map((h)=>{
-        let { id, name, price, desc, img } = h;
-        let search = basket.find((h) => h.id === id) || []
-        return `
-        <div id=product-id-${id} class="item">
-                <img width="218" src="${img}" alt="">
-                <div class="details">
-                    <h3>${name}</h3>
-                    <p>${desc}</p>
-                    <div class="price-quantity">
-                        <h4>#${price} </h4>
-                        <div class="buttons">
-                            <i onclick="decrement(${id})" class="bi bi-dash-lg"></i>
-                            <div id=${id} class="quantity">
-                            ${search.item === undefined ? 0 : search.item}
+// Initialize basket
+const basket = JSON.parse(localStorage.getItem('data')) || [];
+
+// Function to search and display shop items based on the query
+export function searchShopItems(query) {
+    const filteredShopItems = shopItemsData.filter(item =>
+        item.name.toLowerCase().includes(query.toLowerCase())
+    );
+    displayShopItems(filteredShopItems);
+}
+
+// Function to display shop items
+function displayShopItems(items) {
+    const shop = document.getElementById('shop');
+    if (shop) {
+        shop.innerHTML = items.map(({ id, name, price, desc, img }) => {
+            const quantity = basket.find(item => item.id === id)?.item || 0;
+            return `
+                <div id="product-id-${id}" class="item">
+                    <img width="218" src="${img}" alt="${name}">
+                    <div class="details">
+                        <h3>${name}</h3>
+                        <p>${desc}</p>
+                        <div class="price-quantity">
+                            <h4>#${price}</h4>
+                            <div class="buttons">
+                                <i data-id="${id}" class="bi bi-dash-lg decrement-btn"></i>
+                                <div id="quantity-${id}" class="quantity">${quantity}</div>
+                                <i data-id="${id}" class="bi bi-plus-lg increment-btn"></i>
                             </div>
-                            <i onclick="increment(${id})" class="bi bi-plus-lg"></i>
                         </div>
                     </div>
+                    <button class="place-order"><a href="cart.html">Place your order!</a></button>
                 </div>
-            </div>
-        `;
-    }).join(""));
-};
+            `;
+        }).join('');
 
-generateShop();
+        attachEventHandlers();
+    }
+}
 
-let increment = (id) => {
-    let selectedItem = id;
-    let search = basket.find((h)=> h.id === selectedItem.id);
-
-    if(search === undefined){
-        basket.push({
-            id: selectedItem.id,
-            item: 1,
-        });
+// Function to handle increment action
+const handleIncrement = id => {
+    const selectedItem = basket.find(item => item.id === id);
+    if (selectedItem) {
+        selectedItem.item += 1;
     } else {
-        search.item += 1;
+        basket.push({ id, item: 1 });
     }
-    
-    // console.log(basket);
-    update(selectedItem.id);
-    localStorage.setItem("data", JSON.stringify(basket));
+    updateBasket();
 };
 
-let decrement = (id) => {
-    let selectedItem = id;
-    let search = basket.find((h)=> h.id === selectedItem.id);
-    if(search === undefined) return;
-    else if(search.item === 0) return;
-    else {
-        search.item -= 1;
+// Function to handle decrement action
+const handleDecrement = id => {
+    const selectedItem = basket.find(item => item.id === id);
+    if (selectedItem) {
+        if (selectedItem.item > 1) {
+            selectedItem.item -= 1;
+        } else {
+            basket.splice(basket.indexOf(selectedItem), 1);
+        }
+        updateBasket();
     }
-    update(selectedItem.id);
-    basket = basket.filter((h) => h.item !== 0);
-    // console.log(basket);
-
-    localStorage.setItem("data", JSON.stringify(basket));
 };
-let update = (id) => {
-    let search = basket.find((h) => h.id === id);
-    // console.log(search.item);
-    document.getElementById(id).innerHTML = search.item;
+
+// Function to update the basket and display items
+const updateBasket = () => {
+    localStorage.setItem('data', JSON.stringify(basket));
+    generateShop();
     calculation();
 };
 
-let calculation = () => {
-    let cartIcon = document.getElementById("cartAmount");
-    cartIcon.innerHTML = basket.map((h) => h.item).reduce((h,i)=>h + i, 0);   
+// Function to update the cart icon with the total item count
+const calculation = () => {
+    cartIcon.innerHTML = basket.map(item => item.item).reduce((total, quantity) => total + quantity, 0);
 };
 
-calculation();
+// Function to attach event handlers to buttons
+const attachEventHandlers = () => {
+    document.querySelectorAll('.increment-btn').forEach(btn => {
+        btn.addEventListener('click', () => handleIncrement(btn.dataset.id));
+    });
+
+    document.querySelectorAll('.decrement-btn').forEach(btn => {
+        btn.addEventListener('click', () => handleDecrement(btn.dataset.id));
+    });
+};
+
+// Function to generate and display shop items
+const generateShop = () => {
+    displayShopItems(shopItemsData);
+};
+
+// Initialize and display shop items on page load
+document.addEventListener('DOMContentLoaded', () => {
+    const shopSearchInput = document.getElementById('shop-search');
+
+    if (shopSearchInput) {
+        shopSearchInput.addEventListener('input', (e) => {
+            searchShopItems(e.target.value);
+        });
+    }
+
+    generateShop();
+});

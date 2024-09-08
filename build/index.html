@@ -3,48 +3,54 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="Author" content="Hussein">
-    <meta name="Description" content="This is a Shopping website built for Ajogbe bead and more">
-    <meta name="keyword" content="bead , jewelry, ...">
-    <title>Ajogbe-bead-&-more</title>
+    <meta name="author" content="Hussein">
+    <meta name="description" content="A shopping website built for Ajogbe Bead and More">
+    <title>Ajogbe Bead & More</title>
     <link rel="stylesheet" href="src/style.css">
-    <script src="src/Data.js" defer></script>
-    <script src="src/main.js" defer></script>
+    
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" as="style">
 </head>
 <body>
-
-    <div id="navbar" class="navbar">
+    <header id="navbar" class="navbar">
         <a href="index.html">
-            <h2>Ajogbe bead & more</h2>
+            <h2>Ajogbe Bead & More</h2>
         </a>
-
         <a href="cart.html">
             <div class="cart">
                 <i class="bi bi-bag-check-fill"></i>
-                <div id="cartAmount" class="cartAmount">0</div>
-               </div>
+                <!-- <div id="cartAmount" class="cartAmount">0</div> -->
+            </div>
         </a>
-        
-    </div>
+    </header>
     
-    <div class="shop" id="shop">
-        <div class="item">
-            <img width="218" src="" alt="">
-            <div class="details">
-                <h3>flower-vase</h3>
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing.</p>
-                <div class="price-quantity">
-                    <h2>#3500</h2>
-                    <div class="buttons">
-                        <i class="bi bi-dash-lg"></i>
-                        <div class="quantity">0</div>
-                        <i class="bi bi-plus-lg"></i>
+    <main class="main-cart">
+        <input class="search-box" type="text" id="shop-search" placeholder="Search for items...">
+
+        <section class="shop" id="shop">
+            <div class="item">
+                <img width="218" src="" alt="Flower Vase">
+                <div class="details">
+                    <h3>Flower Vase</h3>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing.</p>
+                    <div class="price-quantity">
+                        <h2>#3500</h2>
+                        <div class="buttons">
+                            <i class="bi bi-dash-lg"></i>
+                            <div class="quantity">0</div>
+                            <i class="bi bi-plus-lg"></i>
+                        </div>
                     </div>
                 </div>
             </div>
+        </section>
+    </main>
+    <footer>
+        <div class="footer small">
+            <p class="foot">Copyright &copy; <script>document.write(new Date().getFullYear());</script></p>
         </div>
-    </div>
-
+    </footer>
+    <script src="src/data.js" type="module"></script>
+    <script src="src/main.js" type="module"></script>
 </body>
 </html>
